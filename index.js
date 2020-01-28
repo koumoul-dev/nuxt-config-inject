@@ -22,10 +22,10 @@ exports.prepare = config => {
 }
 
 // read all built files and replace config placeholders with actual values
-exports.replace = config => {
+exports.replace = (config, files = ['.nuxt/**/*', 'dist/**/*']) => {
   const flatConfig = flat(config)
   replace.sync({
-    files: '.nuxt/**/*',
+    files,
     from: new RegExp('(\'|"|http://|https://|/)?STARTCONFIGALIAS/(.*?)/(.*?)/ENDCONFIGALIAS(\'|")?', 'gm'),
     to: (match, prefix, type, key, suffix, offset, originalString, file) => {
       debug(`Match in file ${file}, key=${key}, type=${type} prefix=${prefix} suffix=${suffix}`)
