@@ -1,0 +1,30 @@
+{
+  "name": "@koumoul/nuxt-config-inject",
+  "version": "0.0.0",
+  "description": "Hackish way to obtain \"build once - deploy many times\" with nuxtjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/koumoul-dev/nuxt-config-inject.git"
+  },
+  "keywords": [
+    "nuxts",
+    "build",
+    "dynamic",
+    "env"
+  ],
+  "author": "Alban Mouton <alban.mouton@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/koumoul-dev/nuxt-config-inject/issues"
+  },
+  "homepage": "https://github.com/koumoul-dev/nuxt-config-inject#readme",
+  "dependencies": {
+    "debug": "^4.1.1",
+    "flat": "^5.0.0",
+    "replace-in-files": "^2.0.3"
+  }
+}
