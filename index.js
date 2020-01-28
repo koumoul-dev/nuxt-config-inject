@@ -2,6 +2,13 @@ const flat = require('flat')
 const replace = require('replace-in-file')
 const debug = require('debug')('nuxt-config-inject')
 
+const getProp = (obj, path) => {
+    for (var i=0, path=path.split('.'), len=path.length; i<len; i++){
+      obj = obj && obj[path[i]]
+    }
+    return obj
+}
+
 // take a config object and replace all values with placeholders that will be easy to find in built files afterwards
 exports.prepare = config => {
   const flatConfig = flat(config)
@@ -23,17 +30,17 @@ exports.prepare = config => {
 
 // read all built files and replace config placeholders with actual values
 exports.replace = (config, files = ['.nuxt/**/*', 'dist/**/*']) => {
-  const flatConfig = flat(config)
   replace.sync({
     files,
     from: new RegExp('(\'|"|http://|https://|/)?STARTCONFIGALIAS/(.*?)/(.*?)/ENDCONFIGALIAS(\'|"|/)?', 'gm'),
     to: (match, prefix, type, key, suffix, offset, originalString, file) => {
       debug(`Match in file ${file}, key=${key}, type=${type} prefix=${prefix} suffix=${suffix}`)
-      const val = flatConfig[key] === null ? '' : flatConfig[key]
+      let val = getProp(config, key)
+      val = (val === null || val === undefined) ? '' : val
       // keep quotes around strings and asymmetrical quotes
       let result = `${prefix || ''}${val}${suffix || ''}`
       // remove quote delimiting a non-string value
-      if (type !== 'string' && prefix === suffix) result = '' + val
+      if (type !== 'string' && prefix === suffix) result = JSON.stringify(val)
       // escape quotes inside a quote delimited string
       else if (type === 'string' && prefix && prefix === suffix) result = `${prefix}${val.replace(new RegExp(prefix, 'g'), `\\${prefix}`)}${suffix}`
       // remove prefix that was kept to mark a url or path

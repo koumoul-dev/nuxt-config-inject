@@ -51,7 +51,10 @@ export default {
         prop2: process.env.prop2,
         number1: process.env.number1,
         bool1: process.env.bool1,
-        code1: process.env.code1
+        code1: process.env.code1,
+        object1: process.env.object1,
+        object2: process.env.object2,
+        object3: process.env.object3
       }
     }
   }

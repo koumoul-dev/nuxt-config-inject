@@ -6,7 +6,12 @@ let config = {
   prop2: 'Property 2 default',
   number1: 10,
   bool1: true,
-  code1: '<a href="test.com">test</a>'
+  code1: '<a href="test.com">test</a>',
+  object1: {},
+  object2: {
+    child1: {}
+  },
+  object3: {}
 }
 
 if (process.env.NODE_ENV === 'production') {
@@ -17,7 +22,15 @@ if (process.env.NODE_ENV === 'production') {
     config = {
       ...config,
       title: 'Demo title overwritten',
-      prop1: 'Property 1 overwritten'
+      prop1: 'Property 1 overwritten',
+      object1: {
+        child1: 'test'
+      },
+      object2: {
+        child1: {
+          granchild: 'test'
+        }
+      }
     }
     nuxtConfigInject.replace(config)
   }
@@ -30,7 +43,10 @@ export default {
     prop2: config.prop2,
     number1: config.number1,
     bool1: config.bool1,
-    code1: config.code1
+    code1: config.code1,
+    object1: config.object1,
+    object2: config.object2,
+    object3: config.object3
   },
   /*
   ** Headers of the page
