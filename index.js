@@ -6,7 +6,7 @@ const debug = require('debug')('nuxt-config-inject')
 exports.prepare = config => {
   const flatConfig = flat(config)
   Object.keys(flatConfig).forEach(key => {
-    const val = flatConfig[key] === null ? '' : flatConfig[key] === null
+    const val = flatConfig[key] === null ? '' : flatConfig[key]
     const type = typeof val
     let alias = `STARTCONFIGALIAS/${type}/${key}/ENDCONFIGALIAS`
     // keep prefix marking as a url or path
