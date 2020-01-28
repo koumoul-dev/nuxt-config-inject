@@ -34,6 +34,8 @@ exports.replace = (config, files = ['.nuxt/**/*', 'dist/**/*']) => {
       let result = `${prefix || ''}${val}${suffix || ''}`
       // remove quote delimiting a non-string value
       if (type !== 'string' && prefix === suffix) result = '' + val
+      // escape quotes inside a quote delimited string
+      else if (type === 'string' && prefix && prefix === suffix) result = `${prefix}${val.replace(new RegExp(prefix, 'g'), `\\${prefix}`)}${suffix}`
       // remove prefix that was kept to mark a url or path
       else if (['http://', 'https://', '/'].includes(prefix)) {
         if (suffix === '/' && val.endsWith('/')) suffix = '' // prevent double slashes in base path
