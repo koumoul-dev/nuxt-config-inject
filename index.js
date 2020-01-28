@@ -7,7 +7,7 @@ exports.prepare = config => {
   const flatConfig = flat(config)
   Object.keys(flatConfig).forEach(key => {
     const val = flatConfig[key]
-    const type = typeof val
+    const type = val === null ? 'string' : typeof val
     let alias = `STARTCONFIGALIAS/${type}/${key}/ENDCONFIGALIAS`
     // keep prefix marking as a url or path
     if (type === 'string') {
