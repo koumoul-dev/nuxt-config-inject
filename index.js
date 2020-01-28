@@ -26,7 +26,7 @@ exports.replace = (config, files = ['.nuxt/**/*', 'dist/**/*']) => {
   const flatConfig = flat(config)
   replace.sync({
     files,
-    from: new RegExp('(\'|"|http://|https://|/)?STARTCONFIGALIAS/(.*?)/(.*?)/ENDCONFIGALIAS(\'|")?', 'gm'),
+    from: new RegExp('(\'|"|http://|https://|/)?STARTCONFIGALIAS/(.*?)/(.*?)/ENDCONFIGALIAS(\'|"|/)?', 'gm'),
     to: (match, prefix, type, key, suffix, offset, originalString, file) => {
       debug(`Match in file ${file}, key=${key}, type=${type} prefix=${prefix} suffix=${suffix}`)
       const val = flatConfig[key]
@@ -35,7 +35,10 @@ exports.replace = (config, files = ['.nuxt/**/*', 'dist/**/*']) => {
       // remove quote delimiting a non-string value
       if (type !== 'string' && prefix === suffix) result = '' + val
       // remove prefix that was kept to mark a url or path
-      else if (['http://', 'https://', '/'].includes(prefix)) result = `${val}${suffix || ''}`
+      else if (['http://', 'https://', '/'].includes(prefix)) {
+        if (suffix === '/' && val.endsWith('/')) suffix = '' // prevent double slashes in base path
+        result = `${val}${suffix || ''}`
+      }
       debug(`${match} -> ${result}`)
       return result
     }
