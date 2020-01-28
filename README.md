@@ -32,3 +32,11 @@ if (process.env.NODE_ENV === 'production') {
 DEBUG=nuxt-config-inject NODE_ENV=production nuxt build
 DEBUG=nuxt-config-inject NODE_ENV=production nuxt start
 ```
+
+## Development
+
+```
+cd demo
+DEBUG=nuxt-config-inject NODE_ENV=production npm run build
+DEBUG=nuxt-config-inject NODE_ENV=production npm run start
+```
