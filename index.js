@@ -29,7 +29,7 @@ exports.replace = (config, files = ['.nuxt/**/*', 'dist/**/*']) => {
     from: new RegExp('(\'|"|http://|https://|/)?STARTCONFIGALIAS/(.*?)/(.*?)/ENDCONFIGALIAS(\'|"|/)?', 'gm'),
     to: (match, prefix, type, key, suffix, offset, originalString, file) => {
       debug(`Match in file ${file}, key=${key}, type=${type} prefix=${prefix} suffix=${suffix}`)
-      const val = flatConfig[key]
+      const val = flatConfig[key] === null ? '' : flatConfig[key]
       // keep quotes around strings and asymmetrical quotes
       let result = `${prefix || ''}${val}${suffix || ''}`
       // remove quote delimiting a non-string value
