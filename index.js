@@ -1,12 +1,14 @@
+const fs = require('fs')
 const flat = require('flat')
 const replace = require('replace-in-file')
+const hash = require('object-hash')
 const debug = require('debug')('nuxt-config-inject')
 
 const getProp = (obj, path) => {
-    for (var i=0, path=path.split('.'), len=path.length; i<len; i++){
-      obj = obj && obj[path[i]]
-    }
-    return obj
+  for (var i = 0, path = path.split('.'), len = path.length; i < len; i++) {
+    obj = obj && obj[path[i]]
+  }
+  return obj
 }
 
 // take a config object and replace all values with placeholders that will be easy to find in built files afterwards
@@ -29,7 +31,8 @@ exports.prepare = config => {
 }
 
 // read all built files and replace config placeholders with actual values
-exports.replace = (config, files = ['.nuxt/**/*', 'dist/**/*']) => {
+exports.replace = (config, files = ['.nuxt/**/*']) => {
+  const changedFiles = []
   replace.sync({
     files,
     from: new RegExp('(\'|"|http://|https://|/)?STARTCONFIGALIAS/(.*?)/(.*?)/ENDCONFIGALIAS(\'|"|/)?', 'gm'),
@@ -49,7 +52,31 @@ exports.replace = (config, files = ['.nuxt/**/*', 'dist/**/*']) => {
         result = `${val}${suffix || ''}`
       }
       debug(`${match} -> ${result}`)
+      if (!changedFiles.includes(file)) changedFiles.push(file)
       return result
+    }
+    // dry: true
+  })
+
+  // for proper cache management some files need to be renamed with new hash
+  const hashedFiles = changedFiles
+    .map(file => ({
+      file,
+      match: file.match(/\/([a-z0-9]{20})\./) || file.match(/\/manifest\.([a-z0-9]{8}\.json)/)
+    }))
+    .filter(f => !!f.match)
+  const configHash = hash(config).slice(0, 8)
+  hashedFiles.forEach(f => {
+    const newPath = f.file.replace(`${f.match[1]}`, `${configHash}-${f.match[1]}`)
+    fs.renameSync(f.file, newPath)
+    debug(`Rename hashed file ${f.file} -> ${newPath}`)
+  })
+  replace.sync({
+    files,
+    from: hashedFiles.map(f => new RegExp(f.match[1].replace('.', '\\.'), 'g')),
+    to: (match, offset, originalString, file) => {
+      debug(`Replace reference to hashed file in other file ${file}, hash=${match}`)
+      return `${configHash}-${match}`
     }
     // dry: true
   })

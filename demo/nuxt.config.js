@@ -62,6 +62,11 @@ export default {
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
     ]
   },
+  pwa: {
+    manifest: {
+      name: config.title
+    }
+  },
   /*
   ** Customize the progress-bar color
   */
@@ -123,6 +128,7 @@ export default {
   ** Build configuration
   */
   build: {
+    cache: true,
     /*
     ** You can extend webpack config here
     */
