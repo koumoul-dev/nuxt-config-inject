@@ -5,8 +5,8 @@ const hash = require('object-hash')
 const debug = require('debug')('nuxt-config-inject')
 
 const getProp = (obj, path) => {
-  for (var i = 0, path = path.split('.'), len = path.length; i < len; i++) {
-    obj = obj && obj[path[i]]
+  for (var i = 0, parts = path.split('.'), len = parts.length; i < len; i++) {
+    obj = obj && obj[parts[i]]
   }
   return obj
 }
@@ -17,12 +17,13 @@ exports.prepare = config => {
   Object.keys(flatConfig).forEach(key => {
     const val = flatConfig[key] === null ? '' : flatConfig[key]
     const type = typeof val
-    let alias = `STARTCONFIGALIAS/${type}/${key}/ENDCONFIGALIAS`
-    // keep prefix marking as a url or path
+    let alias = `STARTCONFIGALIAS-${type}-${key}-ENDCONFIGALIAS`
+    // keep prefix/suffix marking as a url or path
     if (type === 'string') {
       if (val.startsWith('http://')) alias = 'http://' + alias
       if (val.startsWith('https://')) alias = 'https://' + alias
       if (val.startsWith('/')) alias = '/' + alias
+      if (val.endsWith('/')) alias = alias + '/'
     }
     debug(`Use config alias ${key} -> ${alias}`)
     flatConfig[key] = alias
@@ -35,7 +36,7 @@ exports.replace = (config, files = ['.nuxt/**/*']) => {
   const changedFiles = []
   replace.sync({
     files,
-    from: new RegExp('(\'|"|http://|https://|/)?STARTCONFIGALIAS/(.*?)/(.*?)/ENDCONFIGALIAS(\'|"|/)?', 'gm'),
+    from: new RegExp('(\'|"|http://|https://|/)?STARTCONFIGALIAS-(.*?)-(.*?)-ENDCONFIGALIAS(\'|"|/)?', 'gm'),
     to: (match, prefix, type, key, suffix, offset, originalString, file) => {
       debug(`Match in file ${file}, key=${key}, type=${type} prefix=${prefix} suffix=${suffix}`)
       let val = getProp(config, key)
@@ -45,7 +46,7 @@ exports.replace = (config, files = ['.nuxt/**/*']) => {
       // remove quote delimiting a non-string value
       if (type !== 'string' && prefix === suffix) result = JSON.stringify(val)
       // escape quotes inside a quote delimited string
-      else if (type === 'string' && prefix && prefix === suffix) result = `${prefix}${val.replace(new RegExp(prefix, 'g'), `\\${prefix}`)}${suffix}`
+      else if (type === 'string' && ['\'', '"'].includes(prefix) && prefix === suffix) result = `${prefix}${val.replace(new RegExp(prefix, 'g'), `\\${prefix}`)}${suffix}`
       // remove prefix that was kept to mark a url or path
       else if (['http://', 'https://', '/'].includes(prefix)) {
         if (suffix === '/' && val.endsWith('/')) suffix = '' // prevent double slashes in base path

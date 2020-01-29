@@ -1,7 +1,8 @@
 import colors from 'vuetify/es5/util/colors'
 
-let config = {
+const buildConfig = {
   title: 'Demo title default',
+  base: '/',
   prop1: 'Property 1 default',
   prop2: 'Property 2 default',
   number1: 10,
@@ -14,24 +15,28 @@ let config = {
   object3: {}
 }
 
+const runConfig = {
+  ...buildConfig,
+  title: 'Demo title overwritten',
+  base: '/my/app/',
+  prop1: 'Property 1 overwritten',
+  object1: {
+    child1: 'test'
+  },
+  object2: {
+    child1: {
+      granchild: 'test'
+    }
+  }
+}
+
+let config = buildConfig
 if (process.env.NODE_ENV === 'production') {
   const nuxtConfigInject = require('../index.js')
   if (process.argv.slice(-1)[0] === 'build') {
     config = nuxtConfigInject.prepare(config)
   } else {
-    config = {
-      ...config,
-      title: 'Demo title overwritten',
-      prop1: 'Property 1 overwritten',
-      object1: {
-        child1: 'test'
-      },
-      object2: {
-        child1: {
-          granchild: 'test'
-        }
-      }
-    }
+    config = runConfig
     nuxtConfigInject.replace(config)
   }
 }
@@ -66,6 +71,9 @@ export default {
     manifest: {
       name: config.title
     }
+  },
+  router: {
+    base: config.base
   },
   /*
   ** Customize the progress-bar color
@@ -129,6 +137,7 @@ export default {
   */
   build: {
     cache: true,
+    publicPath: 'http://localhost:3000' + config.base + '_nuxt/',
     /*
     ** You can extend webpack config here
     */
