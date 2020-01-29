@@ -44,11 +44,13 @@ exports.replace = (config, files = ['.nuxt/**/*']) => {
       // keep quotes around strings and asymmetrical quotes
       let result = `${prefix || ''}${val}${suffix || ''}`
       // remove quote delimiting a non-string value
-      if (type !== 'string' && prefix === suffix) result = JSON.stringify(val)
-      // escape quotes inside a quote delimited string
-      else if (type === 'string' && ['\'', '"'].includes(prefix) && prefix === suffix) result = `${prefix}${val.replace(new RegExp(prefix, 'g'), `\\${prefix}`)}${suffix}`
-      // remove prefix that was kept to mark a url or path
-      else if (['http://', 'https://', '/'].includes(prefix)) {
+      if (type !== 'string' && prefix === suffix) {
+        result = JSON.stringify(val)
+      } else if (type === 'string' && ['\'', '"'].includes(prefix) && prefix === suffix) {
+        // escape quotes and linebreaks inside a quote delimited string
+        result = `${prefix}${val.replace(new RegExp(prefix, 'g'), `\\${prefix}`).replace(/\n/g, '\\n')}${suffix}`
+      } else if (['http://', 'https://', '/'].includes(prefix)) {
+        // remove prefix that was kept to mark a url or path
         if (suffix === '/' && val.endsWith('/')) suffix = '' // prevent double slashes in base path
         result = `${val}${suffix || ''}`
       }
