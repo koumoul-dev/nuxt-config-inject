@@ -142,6 +142,8 @@ export default {
     ** You can extend webpack config here
     */
     extend (config, ctx) {
+      // makes it easier to detect injection bugs
+      config.optimization.minimize = false
     }
   }
 }

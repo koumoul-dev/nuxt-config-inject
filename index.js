@@ -32,7 +32,7 @@ exports.prepare = config => {
 }
 
 // read all built files and replace config placeholders with actual values
-exports.replace = (config, files = ['.nuxt/**/*']) => {
+exports.replace = (config, files = ['.nuxt/**/*', 'static/**/*']) => {
   const changedFiles = []
   replace.sync({
     files,
