@@ -19,6 +19,8 @@
         </v-card-title>
         <v-card-text>
           env: <pre>{{ JSON.stringify(env, null, 2) }}</pre>
+          <br>
+          computedBool1: {{ computedBool1 }}
         </v-card-text>
         <v-card-actions>
           <v-spacer />
@@ -56,6 +58,11 @@ export default {
         object2: process.env.object2,
         object3: process.env.object3
       }
+    }
+  },
+  computed: {
+    computedBool1 () {
+      return process.env.bool1
     }
   }
 }

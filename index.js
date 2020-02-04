@@ -45,7 +45,7 @@ exports.replace = (config, files = ['.nuxt/**/*', 'static/**/*']) => {
       let result = `${prefix || ''}${val}${suffix || ''}`
       // remove quote delimiting a non-string value
       if (type !== 'string' && ['\'', '"'].includes(prefix) && prefix === suffix) {
-        result = JSON.stringify(val)
+        result = ` ${JSON.stringify(val)} `
       } else if (type === 'string' && ['\'', '"'].includes(prefix) && prefix === suffix) {
         // escape quotes and linebreaks inside a quote delimited string
         result = `${prefix}${val.replace(new RegExp(prefix, 'g'), `\\${prefix}`).replace(/\n/g, '\\n')}${suffix}`
