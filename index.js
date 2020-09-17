@@ -36,7 +36,7 @@ exports.replace = (config, files = ['.nuxt/**/*', 'static/**/*']) => {
   const changedFiles = []
   replace.sync({
     files,
-    from: new RegExp('(\'|"|http://|http:\u002F\u002F|https:\u002F\u002F|/)?STARTCONFIGALIAS-(.*?)-(.*?)-ENDCONFIGALIAS(\'|"|/)?', 'gmi'),
+    from: new RegExp('(\'|"|http://|http:\\u002F\\u002F|https:\\u002F\\u002F|/)?STARTCONFIGALIAS-(.*?)-(.*?)-ENDCONFIGALIAS(\'|"|/)?', 'gmi'),
     to: (match, prefix, type, key, suffix, offset, originalString, file) => {
       debug(`Match in file ${file}, key=${key}, type=${type} prefix=${prefix} suffix=${suffix}`)
       let val = getProp(config, key)
