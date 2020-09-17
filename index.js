@@ -36,7 +36,7 @@ exports.replace = (config, files = ['.nuxt/**/*', 'static/**/*']) => {
   const changedFiles = []
   replace.sync({
     files,
-    from: new RegExp('(\'|"|http://|http:\\u002F\\u002F|https:\\u002F\\u002F|/)?STARTCONFIGALIAS-(.*?)-(.*?)-ENDCONFIGALIAS(\'|"|/)?', 'gmi'),
+    from: new RegExp('(\'|"|http://|https://|http:\\\\u002F\\\\u002F|https:\\\\u002F\\\\u002F|/)?STARTCONFIGALIAS-(.*?)-(.*?)-ENDCONFIGALIAS(\'|"|/)?', 'gmiu'),
     to: (match, prefix, type, key, suffix, offset, originalString, file) => {
       debug(`Match in file ${file}, key=${key}, type=${type} prefix=${prefix} suffix=${suffix}`)
       let val = getProp(config, key)
@@ -49,7 +49,7 @@ exports.replace = (config, files = ['.nuxt/**/*', 'static/**/*']) => {
       } else if (type === 'string' && ['\'', '"'].includes(prefix) && prefix === suffix) {
         // escape quotes and linebreaks inside a quote delimited string
         result = `${prefix}${val.replace(new RegExp(prefix, 'g'), `\\${prefix}`).replace(/\n/g, '\\n')}${suffix}`
-      } else if (['http://', 'https://', 'http:\u002F\u002F', 'https:\u002F\u002F', '/'].includes(prefix)) {
+      } else if (['http://', 'https://', 'http:\\u002F\\u002F', 'https:\\u002F\\u002F', '/'].includes(prefix)) {
         // remove prefix that was kept to mark a url or path
         if (suffix === '/' && val.endsWith('/')) suffix = '' // prevent double slashes in base path
         if (prefix !== '/' || val.startsWith('/')) prefix = ''
