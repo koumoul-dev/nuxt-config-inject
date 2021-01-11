@@ -66,7 +66,7 @@ exports.replace = (config, files = ['.nuxt/**/*', 'static/**/*']) => {
   const hashedFiles = changedFiles
     .map(file => ({
       file,
-      match: file.match(/\/dist\/([a-z0-9]{7})\.js/) || file.match(/\/([a-z0-9]{20})\./) || file.match(/\/manifest\.([a-z0-9]{8}\.json)/)
+      match: file.match(/\/dist\/(client|server)\/([a-z0-9]{7})\.js/) || file.match(/\/([a-z0-9]{20})\./) || file.match(/\/manifest\.([a-z0-9]{8}\.json)/)
     }))
     .filter(f => !!f.match)
   const configHash = hash(config).slice(0, 8)
