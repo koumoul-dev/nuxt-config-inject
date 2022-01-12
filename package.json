@@ -1,6 +1,6 @@
 {
   "name": "@koumoul/nuxt-config-inject",
-  "version": "0.4.11",
+  "version": "0.4.12",
   "description": "Hackish way to obtain \"build once - deploy many times\" with nuxtjs",
   "main": "index.js",
   "scripts": {
