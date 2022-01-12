@@ -75,9 +75,10 @@ exports.replace = (config, files = ['.nuxt/**/*', 'static/**/*']) => {
     fs.renameSync(f.file, newPath)
     debug(`Rename hashed file ${f.file} -> ${newPath}`)
   })
+  const filePatterns = [...new Set(hashedFiles.map(f => f.match[1].replace(/\./g, '\\.')))]
   replace.sync({
     files,
-    from: hashedFiles.map(f => new RegExp(f.match[1].replace('.', '\\.'), 'g')),
+    from: filePatterns.map(f => new RegExp(filePatterns, 'g')),
     to: (match, offset, originalString, file) => {
       debug(`Replace reference to hashed file in other file ${file}, hash=${match}`)
       return `${configHash}-${match}`
