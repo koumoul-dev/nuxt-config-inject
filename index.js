@@ -78,7 +78,7 @@ exports.replace = (config, files = ['.nuxt/**/*', 'static/**/*']) => {
   const filePatterns = [...new Set(hashedFiles.map(f => f.match[1].replace(/\./g, '\\.')))]
   replace.sync({
     files,
-    from: filePatterns.map(f => new RegExp(filePatterns, 'g')),
+    from: filePatterns.map(fp => new RegExp(fp, 'g')),
     to: (match, offset, originalString, file) => {
       debug(`Replace reference to hashed file in other file ${file}, hash=${match}`)
       return `${configHash}-${match}`
