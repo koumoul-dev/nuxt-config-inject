@@ -24,7 +24,7 @@
   "homepage": "https://github.com/koumoul-dev/nuxt-config-inject#readme",
   "dependencies": {
     "debug": "^4.1.1",
-    "flat": "^5.0.0",
+    "flat": "^5.0.1",
     "object-hash": "^2.0.1",
     "replace-in-file": "^5.0.2"
   },
